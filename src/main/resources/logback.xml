@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="config" level="error"/>
+    <logger name="util" level="debug"/>
+    <logger name="com.atomikos.icatch" level="error"/>
+    <logger name="org.hibernate.engine.transaction.internal.TransactionImpl" level="debug"/>
+    <logger name="org.springframework.orm.jpa" level="debug"/>
+    <logger name="org.springframework" level="error"/>
+
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+</configuration>

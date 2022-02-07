@@ -1,0 +1,79 @@
+package util.dbxa;
+
+import entity.Album;
+import entity.Instrument;
+import entity.Singer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.GregorianCalendar;
+
+@Repository
+public class DBAInitializer {
+    private Logger logger = LoggerFactory.getLogger(DBAInitializer.class);
+
+    @PersistenceContext(unitName = "emfA")
+    private EntityManager em;
+    @Autowired
+    private TransactionTemplate tt;
+
+    @PostConstruct
+    public void initDB() {
+        logger.info("\n\n\nStarting database initialization...");
+
+        tt.execute(status -> {
+            Instrument guitar = new Instrument();
+            guitar.setInstrumentId("Guitar");
+            em.persist(guitar);
+            Instrument piano = new Instrument();
+            piano.setInstrumentId("Piano");
+            em.persist(piano);
+            Instrument voice = new Instrument();
+            voice.setInstrumentId("Voice");
+            em.persist(voice);
+            Singer singer = new Singer();
+
+            singer.setFirstName("John");
+            singer.setLastName("Mayer");
+            singer.setBirthDate(new GregorianCalendar(1977, 9, 16).getTime());
+            singer.getInstruments().add(guitar);
+            singer.getInstruments().add(piano);
+            Album album1 = new Album();
+            album1.setTitle("The Search For Everything");
+            album1.setReleaseDate(new GregorianCalendar(2017, 0, 20).getTime());
+            singer.addAlbum(album1);
+            Album album2 = new Album();
+            album2.setTitle("Battle Studies");
+            album2.setReleaseDate(new GregorianCalendar(2009, 10, 17).getTime());
+            singer.addAlbum(album2);
+            em.persist(singer);
+
+            singer = new Singer();
+            singer.setFirstName("Eric");
+            singer.setLastName("Clapton");
+            singer.setBirthDate(new GregorianCalendar(1945, 2, 30).getTime());
+            singer.getInstruments().add(guitar);
+            Album album = new Album();
+            album.setTitle("From The Cradle");
+            album.setReleaseDate(new GregorianCalendar(1994, 8, 13).getTime());
+            singer.addAlbum(album);
+            em.persist(singer);
+
+            singer = new Singer();
+            singer.setFirstName("John");
+            singer.setLastName("Butler");
+            singer.setBirthDate(new GregorianCalendar(1975, 3, 1).getTime());
+            singer.getInstruments().add(guitar);
+            em.persist(singer);
+            return 0L;
+        });
+
+        logger.info("Database initialization finished.\n\n\n");
+    }
+}
